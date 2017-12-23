@@ -9,24 +9,18 @@ try:
 except CreationError:
     pass
 db = conn["blockchain"]
+for collection in ["Blocks", "Addresses", "Transaction"]:
+    try:
+        db.createCollection(collection)
+    except CreationError:
+        pass
 try:
-    blocks = db.createCollection("Blocks")
-except CreationError:
-    pass
-try:
-    addresses = db.createCollection("Addresses")
-except CreationError:
-    pass
-try:
-    transactions = db.createCollection("Transaction")
-except CreationError:
-    pass
-try:
-    blockchain = db.createGraph("Blockchain")
+    db.createGraph("Blockchain")
 except CreationError:
     pass
 print("DB: {0}".format(db))
 
+graph = db.graphs['Blockchain']
 app = Celery("blockchain")
 app.conf.broker_url = "redis://localhost:6379/10"
 
